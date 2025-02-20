@@ -5,69 +5,151 @@ class ReceiversScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Blood Receivers',
-            style: Theme.of(context).textTheme.headlineMedium,
+    final theme = Theme.of(context);
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.red.shade50,
+              Colors.white,
+            ],
           ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.red.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(isLargeScreen ? 24.0 : 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Blood Receivers',
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Colors.red[900],
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.5,
+                  ),
+                  semanticsLabel: 'Blood Receivers Page Title',
+                ),
+                const SizedBox(height: 24),
+                _buildSearchBar(theme),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: _buildReceiverList(isLargeScreen),
                 ),
               ],
             ),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search receivers...',
-                border: InputBorder.none,
-                icon: Icon(Icons.search, color: Colors.red[700]),
-              ),
-            ),
           ),
-          const SizedBox(height: 24),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.red.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.red[700],
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: TextField(
+        style: theme.textTheme.bodyLarge,
+        decoration: InputDecoration(
+          hintText: 'Search receivers...',
+          hintStyle: TextStyle(color: Colors.grey[400]),
+          prefixIcon: Icon(Icons.search, color: Colors.red[700]),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.tune, color: Colors.red[700]),
+            onPressed: () {},
+            tooltip: 'Filter search results',
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReceiverList(bool isLargeScreen) {
+    final bloodTypes = ['A+', 'B+', 'O+', 'AB+', 'A-', 'B-', 'O-', 'AB-'];
+    final urgencyLabels = ['Urgent', 'Critical', 'Standard'];
+    final urgencyColors = [
+      Colors.red[700],
+      Colors.orange[700],
+      Colors.green[700]
+    ];
+
+    return ListView.builder(
+      itemCount: 10,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        final urgencyIndex = index % 3;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: EdgeInsets.only(
+            bottom: 16,
+            left: isLargeScreen ? 32 : 0,
+            right: isLargeScreen ? 32 : 0,
+          ),
+          child: Card(
+            elevation: 4,
+            shadowColor: Colors.red.withOpacity(0.2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: urgencyColors[urgencyIndex]!,
+                      width: 6,
+                    ),
                   ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.red[50],
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.red[700],
+                          Hero(
+                            tag: 'receiver_$index',
+                            child: CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.red[50],
+                              child: Icon(
+                                Icons.person,
+                                size: 32,
+                                color: Colors.red[700],
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,19 +157,16 @@ class ReceiversScreen extends StatelessWidget {
                                 Text(
                                   'Patient ${index + 1}',
                                   style: const TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                const SizedBox(height: 4),
                                 Text(
-                                  'Blood Type: ${[
-                                    'A+',
-                                    'B+',
-                                    'O+',
-                                    'AB+'
-                                  ][index % 4]}',
+                                  'Blood Type: ${bloodTypes[index % 8]}',
                                   style: TextStyle(
-                                    color: Colors.grey[600],
+                                    fontSize: 16,
+                                    color: Colors.grey[700],
                                   ),
                                 ),
                               ],
@@ -95,66 +174,102 @@ class ReceiversScreen extends StatelessWidget {
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
+                              horizontal: 16,
+                              vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.red[50],
+                              color:
+                                  urgencyColors[urgencyIndex]?.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              'Urgent',
+                              urgencyLabels[urgencyIndex],
                               style: TextStyle(
-                                color: Colors.red[700],
+                                color: urgencyColors[urgencyIndex],
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Location: City Hospital, Ward ${index + 1}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
+                      const SizedBox(height: 20),
+                      _buildInfoRow(
+                        Icons.location_on,
+                        'City Hospital, Ward ${index + 1}',
                       ),
-                      Text(
-                        'Required: 2 units',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
+                      const SizedBox(height: 8),
+                      _buildInfoRow(
+                        Icons.bloodtype,
+                        'Required: ${index + 1} units',
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TextButton(
+                          TextButton.icon(
                             onPressed: () {},
-                            child: Text(
-                              'View Details',
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Colors.red[700],
+                            ),
+                            label: Text(
+                              'Details',
                               style: TextStyle(color: Colors.red[700]),
                             ),
                           ),
                           const SizedBox(width: 12),
-                          ElevatedButton(
+                          ElevatedButton.icon(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red[700],
                               foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                            child: const Text('Contact'),
+                            icon: const Icon(Icons.message),
+                            label: const Text(
+                              'Contact',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 20,
+          color: Colors.grey[600],
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey[700],
+          ),
+        ),
+      ],
     );
   }
 }

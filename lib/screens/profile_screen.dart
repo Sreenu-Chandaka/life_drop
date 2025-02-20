@@ -5,70 +5,77 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          _buildProfileHeader(),
-          const SizedBox(height: 24),
-          _buildStatsSection(),
-          const SizedBox(height: 24),
-          _buildProfileSection(
-            title: 'Personal Information',
-            children: [
-              _buildInfoRow('Blood Type', 'A+'),
-              _buildInfoRow('Age', '28'),
-              _buildInfoRow('Gender', 'Male'),
-              _buildInfoRow('Weight', '75 kg'),
+    final theme = Theme.of(context);
+    final isLargeScreen = MediaQuery.of(context).size.width > 600;
+
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.red.shade50,
+              Colors.white,
+              Colors.white,
             ],
+            stops: const [0.0, 0.3, 1.0],
           ),
-          const SizedBox(height: 16),
-          _buildProfileSection(
-            title: 'Contact Information',
-            children: [
-              _buildInfoRow('Phone', '+1 234 567 8900'),
-              _buildInfoRow('Email', 'john.doe@example.com'),
-              _buildInfoRow('Address', '123 Main St, City'),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildProfileSection(
-            title: 'Settings',
-            children: [
-              _buildSettingTile(
-                'Notification Preferences',
-                Icons.notifications_outlined,
-              ),
-              _buildSettingTile('Privacy Settings', Icons.security_outlined),
-              _buildSettingTile('Language', Icons.language_outlined),
-              _buildSettingTile('Help & Support', Icons.help_outline),
-            ],
-          ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[50],
-                foregroundColor: Colors.red[700],
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text(
-                'Logout',
-                style: TextStyle(fontSize: 16),
-              ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(
+              horizontal: isLargeScreen ? 32 : 16,
+              vertical: 24,
+            ),
+            child: Column(
+              children: [
+                _buildProfileHeader(theme),
+                const SizedBox(height: 32),
+                _buildProfileSection(
+                  theme: theme,
+                  title: 'Personal Information',
+                  icon: Icons.person_outline,
+                  children: [
+                    _buildInfoRow(theme, 'Blood Type', 'A+', Icons.bloodtype),
+                    _buildInfoRow(theme, 'Age', '28', Icons.cake_outlined),
+                    _buildInfoRow(
+                        theme, 'Gender', 'Male', Icons.people_outline),
+                    _buildInfoRow(theme, 'Weight', '75 kg',
+                        Icons.monitor_weight_outlined),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _buildProfileSection(
+                  theme: theme,
+                  title: 'Contact Information',
+                  icon: Icons.contact_mail_outlined,
+                  children: [
+                    _buildInfoRow(theme, 'Phone', '+1 234 567 8900',
+                        Icons.phone_outlined),
+                    _buildInfoRow(theme, 'Email', 'john.doe@example.com',
+                        Icons.email_outlined),
+                    _buildInfoRow(theme, 'Address', '123 Main St, City',
+                        Icons.location_on_outlined),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _buildSettingsSection(theme),
+                const SizedBox(height: 32),
+                _buildLogoutButton(theme),
+                const SizedBox(height: 24),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildProfileHeader() {
+  Widget _buildProfileHeader(ThemeData theme) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -76,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
           BoxShadow(
             color: Colors.red.withOpacity(0.1),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -86,111 +93,50 @@ class ProfileScreen extends StatelessWidget {
             alignment: Alignment.bottomRight,
             children: [
               CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.red[50],
+                radius: 40,
+                backgroundColor: Colors.red.shade50,
                 child: Icon(
                   Icons.person,
-                  size: 50,
-                  color: Colors.red[700],
+                  size: 40,
+                  color: Colors.red.shade700,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.red[700],
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.edit,
-                  size: 20,
-                  color: Colors.white,
+              Material(
+                shape: const CircleBorder(),
+                elevation: 2,
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: Colors.red.shade700,
+                  child: IconButton(
+                    icon: const Icon(Icons.edit, size: 16, color: Colors.white),
+                    onPressed: () {},
+                    tooltip: 'Edit Profile Picture',
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'John Doe',
-            style: TextStyle(
-              fontSize: 24,
+            style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.red[50],
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'Regular Donor • 10 donations',
-              style: TextStyle(
-                color: Colors.red[700],
-                fontWeight: FontWeight.w500,
-              ),
+              color: Colors.red.shade900,
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatsSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.red[700]!,
-            Colors.red[500]!,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildStatItem('Total\nDonations', '10'),
-          _buildStatItem('Lives\nSaved', '30'),
-          _buildStatItem('Donation\nStreak', '3'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-          ),
-        ),
-      ],
     );
   }
 
   Widget _buildProfileSection({
+    required ThemeData theme,
     required String title,
+    required IconData icon,
     required List<Widget> children,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -198,20 +144,29 @@ class ProfileScreen extends StatelessWidget {
           BoxShadow(
             color: Colors.red.withOpacity(0.1),
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.red[900],
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              Icon(
+                icon,
+                color: Colors.red.shade700,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.red.shade900,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           ...children,
@@ -220,24 +175,32 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(
+      ThemeData theme, String label, String value, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Icon(
+            icon,
+            size: 20,
+            color: Colors.grey.shade600,
+          ),
+          const SizedBox(width: 12),
           Text(
             label,
             style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
+              color: Colors.grey.shade600,
+              fontSize: 16,
             ),
           ),
+          const Spacer(),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
+              color: Colors.grey.shade900,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
-              fontSize: 14,
             ),
           ),
         ],
@@ -245,21 +208,126 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingTile(String title, IconData icon) {
+  Widget _buildSettingsSection(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.settings_outlined,
+                color: Colors.red.shade700,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Settings',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: Colors.red.shade900,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _buildSettingTile(
+            'Notification Preferences',
+            Icons.notifications_outlined,
+            theme,
+          ),
+          _buildSettingTile(
+            'Privacy Settings',
+            Icons.security_outlined,
+            theme,
+          ),
+          _buildSettingTile(
+            'Language',
+            Icons.language_outlined,
+            theme,
+          ),
+          _buildSettingTile(
+            'Help & Support',
+            Icons.help_outline,
+            theme,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingTile(String title, IconData icon, ThemeData theme) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: Colors.red[700]),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.red.shade50,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          icon,
+          color: Colors.red.shade700,
+          size: 24,
+        ),
+      ),
       title: Text(
         title,
-        style: const TextStyle(
+        style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: Colors.grey[400],
+      trailing: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          Icons.chevron_right,
+          color: Colors.grey.shade600,
+        ),
       ),
       onTap: () {},
+    );
+  }
+
+  Widget _buildLogoutButton(ThemeData theme) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: ElevatedButton.icon(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.red.shade700,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 4,
+        ),
+        icon: const Icon(Icons.logout),
+        label: const Text(
+          'Logout',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }
