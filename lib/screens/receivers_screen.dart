@@ -46,11 +46,7 @@ class ReceiversScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.red[700],
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      
     );
   }
 
