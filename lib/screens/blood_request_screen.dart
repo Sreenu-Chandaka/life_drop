@@ -16,16 +16,7 @@ class BloodRequestScreen extends StatelessWidget {
               delegate: SliverChildListDelegate([
                 _buildRequestForm(context),
                 const SizedBox(height: 24),
-                const Text(
-                  'Active Requests',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1A1A),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildActiveRequests(context),
+                
               ]),
             ),
           ),
@@ -166,21 +157,8 @@ class BloodRequestScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActiveRequests(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 3,
-      itemBuilder: (context, index) => _RequestCard(
-        bloodType: 'A+',
-        hospital: 'City Hospital',
-        units: 2,
-        timeAgo: '2 hours ago',
-        isUrgent: index == 0,
-        distance: '2.5 km away',
-      ),
-    );
-  }
+
+
 }
 
 class _FormField extends StatelessWidget {
