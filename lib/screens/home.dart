@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../maps.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -31,7 +33,6 @@ class HomeScreen extends StatelessWidget {
                     _buildHealthMetrics(),
                     const SizedBox(height: 24),
                     _buildNearbyFacilities(),
-                    
                   ],
                 ),
               ),
@@ -213,7 +214,6 @@ class HomeScreen extends StatelessWidget {
           crossAxisSpacing: 16,
           childAspectRatio: 1.5,
           children: const [
-           
             _HealthMetricCard(
               title: 'Blood Pressure',
               value: '120/80',
@@ -221,7 +221,6 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.speed,
               color: Color(0xFF1E88E5),
             ),
-          
             _HealthMetricCard(
               title: 'BMI',
               value: '22.5',
@@ -255,38 +254,32 @@ class HomeScreen extends StatelessWidget {
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
           childAspectRatio: 1.5,
-          children:[
-    NearbyFacilityCard(
+          children: [
+            NearbyFacilityCard(
               title: 'Hospitals',
               icon: Icons.local_hospital,
               color: Color(0xFFE53935),
+              onTap: () {
+                MapLauncher.launchMapWithSearch("near by hospitals");
+              },
             ),
-           NearbyFacilityCard(
+            NearbyFacilityCard(
               title: 'Pharamacy',
-              icon:Icons.medical_information,
+              icon: Icons.medical_information,
               color: Color.fromARGB(255, 30, 206, 229),
             ),
-             NearbyFacilityCard(
+            NearbyFacilityCard(
               title: 'Blood Banks',
               icon: Icons.health_and_safety,
               color: Color(0xFF1E88E5),
             ),
           ],
         ),
-          const SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
   }
-
-
-
 }
-
-
-
-
-
-
 
 class NearbyFacilityCard extends StatelessWidget {
   final String title;
@@ -355,7 +348,6 @@ class NearbyFacilityCard extends StatelessWidget {
                   ),
                 ),
               ),
-              
             ],
           ),
         ),
@@ -363,6 +355,7 @@ class NearbyFacilityCard extends StatelessWidget {
     );
   }
 }
+
 class _TimelineCard extends StatelessWidget {
   final String title;
   final String value;
@@ -501,7 +494,8 @@ class _HealthMetricCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     color: color.withOpacity(0.7),
-                  ),),
+                  ),
+                ),
             ],
           ),
           Text(
@@ -518,4 +512,3 @@ class _HealthMetricCard extends StatelessWidget {
 }
 
 enum FacilityType { hospital, pharmacy }
-
