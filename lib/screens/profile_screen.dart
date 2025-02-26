@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -244,31 +245,51 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _buildSettingTile(
-            'Notification Preferences',
-            Icons.notifications_outlined,
-            theme,
+            title: 'Notification Preferences',
+            icon: Icons.notifications_outlined,
+            theme: theme,
+            onTap: () {},
           ),
           _buildSettingTile(
-            'Privacy Settings',
-            Icons.security_outlined,
-            theme,
+            title: 'Privacy Settings',
+            icon: Icons.security_outlined,
+            theme: theme,
+            onTap: () {},
           ),
           _buildSettingTile(
-            'Language',
-            Icons.language_outlined,
-            theme,
+            title: 'Language',
+            icon: Icons.language_outlined,
+            theme: theme,
+            onTap: () {},
           ),
           _buildSettingTile(
-            'Help & Support',
-            Icons.help_outline,
-            theme,
+            title: 'Help & Support',
+            icon: Icons.help_outline,
+            theme: theme,
+            onTap: () {},
+          ),
+          _buildSettingTile(
+            title: 'Whatsapp AI Doctor',
+            icon: Icons.medical_services_outlined,
+            theme: theme,
+            onTap: () {
+              launchUrl(
+                Uri.parse('https://api.whatsapp.com/send/?phone=918738030604&text=%E2%80%8B%E2%80%8CHi+August&type=phone_number&app_absent=0'),
+                mode: LaunchMode.externalApplication,
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSettingTile(String title, IconData icon, ThemeData theme) {
+  Widget _buildSettingTile({
+    required String title,
+    required IconData icon,
+    required ThemeData theme,
+    required Function()? onTap,
+  }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Container(
@@ -300,7 +321,7 @@ class ProfileScreen extends StatelessWidget {
           color: Colors.grey.shade600,
         ),
       ),
-      onTap: () {},
+      onTap: onTap!,
     );
   }
 
