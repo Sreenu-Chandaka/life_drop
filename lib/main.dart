@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/lifedrophome.dart';
+import 'screens/login_page.dart';
 
 void main() {
   runApp(const LifeDropApp());
@@ -56,7 +57,7 @@ class LifeDropApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LifeDropHome(),
+      home: const PhoneLoginPage(),
     );
   }
 }
