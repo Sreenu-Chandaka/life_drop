@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'lifedrophome.dart';
+
 class UserDetailsPage extends StatefulWidget {
   final String phoneNumber;
 
@@ -60,7 +62,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         
         // Navigate to home screen after successful submission
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home', arguments: userData);
+          // Navigator.of(context).pushReplacementNamed('/home', arguments: userData);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LifeDropHome()));
         }
       } catch (e) {
         // Handle errors
