@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:life_drop/widgets/receivers_bloc.dart';
 
+import 'screens/LoginPage.dart';
+import 'screens/blood_request_screen.dart';
 import 'screens/lifedrophome.dart';
-import 'screens/login_page.dart';
+
 
 void main() {
   runApp(const LifeDropApp());
@@ -10,9 +14,36 @@ void main() {
 class LifeDropApp extends StatelessWidget {
   const LifeDropApp({super.key});
 
+  
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+
+      final apiService = ApiService();
+    
+    // Create our repository
+    final receiversRepository = ReceiversRepository(apiService: apiService);
+    
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<BloodApi>(
+          create: (context) => BloodApi(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<BloodRequestBloc>(
+            create: (context) => BloodRequestBloc(
+              bloodApi: context.read<BloodApi>(),
+            )..add(LoadBloodRequests()),
+          ),
+           BlocProvider<ReceiversBloc>(
+          create: (context) => ReceiversBloc(apiService: apiService),
+        ),
+        ],
+        child: MaterialApp(
+          
+        
       debugShowCheckedModeBanner: false,
       title: 'Life Drop',
       theme: ThemeData(
@@ -58,6 +89,6 @@ class LifeDropApp extends StatelessWidget {
         ),
       ),
       home: const PhoneLoginPage(),
-    );
+        )));
   }
 }
